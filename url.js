@@ -1,4 +1,4 @@
-module.exports = function ( projectName ) {
+export default function ( projectName ) {
   const BASE_URL = "https://www.transifex.com/api/2/";
   const BASEP_URL = BASE_URL + "project/";
   const projectUrl = BASEP_URL + projectName + "/";
@@ -29,4 +29,4 @@ module.exports = function ( projectName ) {
   return {
     API: API
   };
-};
+};;

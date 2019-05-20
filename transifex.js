@@ -1,13 +1,14 @@
-const request = require("request"),
-    _ = require("lodash"),
-    crypto = require('crypto');
+import request from "request";
+import _ from "lodash";
+import crypto from "crypto";
+import url_moduleDefault from "./url";
 
-function Transifex(options) {
+export default function Transifex(options) {
   this.projectSlug = options.project_slug || "webmaker";
   this.userAuth = options.credential || {};
   this.authHeader = "Basic " + new Buffer(this.userAuth).toString("base64");
-  this.expUrl = require("./url")(this.projectSlug).API;
-};
+  this.expUrl = url_moduleDefault(this.projectSlug).API;
+}
 
 // request the project details based on the url provided
 Transifex.prototype.projectRequest = function(url, options, callback) {
@@ -581,9 +582,3 @@ Transifex.prototype.languageSetMethods = function(callback) {
     callback(null, languages);
   });
 };
-
-/*
-* END LANGUAGE INFO API
-*/
-
-module.exports = Transifex;

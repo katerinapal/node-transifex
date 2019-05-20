@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-var Transifex   = require("../transifex"),
-    path        = require('path'),
-    fs          = require('fs'),
-    mkpath      = require('mkpath');
+import Transifex from "../transifex";
+import path from "path";
+import fs from "fs";
+import mkpath from "mkpath";
+import program from "commander";
 
 var source_language = false,
 meta = false;
@@ -107,10 +108,9 @@ function importFromTransifex(options) {
       });
     });
   });
-};
+}
 
 function main() {
-  var program = require('commander');
   program
     .option('-u, --credential <user:pass>', 'specify a Transifex username and password in the form username:password')
     .option('-p, --project <slug>', 'specify project slug')
