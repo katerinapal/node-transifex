@@ -1,6 +1,6 @@
-var should = require('should');
-var nock = require('nock');
-var Transifex = require('../transifex');
+import should from "should";
+import nock from "nock";
+import { Transifex } from "../transifex";
 
 transifex = new Transifex({
   project_slug: "node-transifex-sample",
