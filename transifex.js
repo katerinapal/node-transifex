@@ -1,27 +1,42 @@
-import request from "request";
-import _ from "lodash";
-import crypto from "crypto";
-import { urljs } from "./url";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Transifex = undefined;
+
+var _request = require("request");
+
+var _request2 = _interopRequireDefault(_request);
+
+var _lodash = require("lodash");
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _crypto = require("crypto");
+
+var _crypto2 = _interopRequireDefault(_crypto);
+
+var _url = require("./url");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Transifex(options) {
   this.projectSlug = options.project_slug || "webmaker";
   this.userAuth = options.credential || {};
   this.authHeader = "Basic " + new Buffer(this.userAuth).toString("base64");
-  this.expUrl = urljs(this.projectSlug).API;
+  this.expUrl = (0, _url.urljs)(this.projectSlug).API;
 }
 
 // request the project details based on the url provided
-Transifex.prototype.projectRequest = function(url, options, callback) {
+Transifex.prototype.projectRequest = function (url, options, callback) {
   var fileTypeContent;
   // Allow calling with or without options.
   if (typeof options === 'function') {
     callback = options;
     options = {};
   } else {
-    callback = callback || function(){};
+    callback = callback || function () {};
   }
-  request.get({ url: url, qs: options, headers: { "Authorization": this.authHeader } },
-    function(error, response, body) {
+  _request2.default.get({ url: url, qs: options, headers: { "Authorization": this.authHeader } }, function (error, response, body) {
     if (error) {
       return callback(error);
     }
@@ -31,7 +46,7 @@ Transifex.prototype.projectRequest = function(url, options, callback) {
 
       return callback(responseError);
     }
-    if(response.headers['content-disposition']) {
+    if (response.headers['content-disposition']) {
       var str = response.headers['content-disposition'];
       fileTypeContent = str.substring(str.lastIndexOf(".")).match(/\w+/);
       fileTypeContent = fileTypeContent[0] || null;
@@ -41,12 +56,11 @@ Transifex.prototype.projectRequest = function(url, options, callback) {
 };
 
 // send data (POST) to project on the url provided
-Transifex.prototype.projectPostRequest = function(url, data, callback) {
+Transifex.prototype.projectPostRequest = function (url, data, callback) {
   var fileTypeContent;
   // Allow calling with or without options.
-  callback = callback || function(){};
-  request.post({ url: url, body: JSON.stringify(data), headers: { "Authorization": this.authHeader, 'content-type': 'application/json' }},
-    function(error, response, body) {
+  callback = callback || function () {};
+  _request2.default.post({ url: url, body: JSON.stringify(data), headers: { "Authorization": this.authHeader, 'content-type': 'application/json' } }, function (error, response, body) {
     if (error) {
       return callback(error);
     }
@@ -56,7 +70,7 @@ Transifex.prototype.projectPostRequest = function(url, data, callback) {
 
       return callback(responseError);
     }
-    if(response.headers['content-disposition']) {
+    if (response.headers['content-disposition']) {
       var str = response.headers['content-disposition'];
       fileTypeContent = str.substring(str.lastIndexOf(".")).match(/\w+/);
       fileTypeContent = fileTypeContent[0] || null;
@@ -66,12 +80,11 @@ Transifex.prototype.projectPostRequest = function(url, data, callback) {
 };
 
 // send DELETE to project on the url provided
-Transifex.prototype.projectDeleteRequest = function(url, callback) {
+Transifex.prototype.projectDeleteRequest = function (url, callback) {
   var fileTypeContent;
   // Allow calling with or without options.
-  callback = callback || function(){};
-  request.del({ url: url, headers: { "Authorization": this.authHeader }},
-    function(error, response, body) {
+  callback = callback || function () {};
+  _request2.default.del({ url: url, headers: { "Authorization": this.authHeader } }, function (error, response, body) {
     if (error) {
       return callback(error);
     }
@@ -81,7 +94,7 @@ Transifex.prototype.projectDeleteRequest = function(url, callback) {
 
       return callback(responseError);
     }
-    if(response.headers['content-disposition']) {
+    if (response.headers['content-disposition']) {
       var str = response.headers['content-disposition'];
       fileTypeContent = str.substring(str.lastIndexOf(".")).match(/\w+/);
       fileTypeContent = fileTypeContent[0] || null;
@@ -91,12 +104,11 @@ Transifex.prototype.projectDeleteRequest = function(url, callback) {
 };
 
 // send data (PUT) to project on the url provided
-Transifex.prototype.projectPutRequest = function(url, data, callback) {
+Transifex.prototype.projectPutRequest = function (url, data, callback) {
   var fileTypeContent;
   // Allow calling with or without options.
-  callback = callback || function(){};
-  request.put({ url: url, body: JSON.stringify(data), headers: { "Authorization": this.authHeader, 'content-type': 'application/json' }},
-    function(error, response, body) {
+  callback = callback || function () {};
+  _request2.default.put({ url: url, body: JSON.stringify(data), headers: { "Authorization": this.authHeader, 'content-type': 'application/json' } }, function (error, response, body) {
     if (error) {
       return callback(error);
     }
@@ -106,7 +118,7 @@ Transifex.prototype.projectPutRequest = function(url, data, callback) {
 
       return callback(responseError);
     }
-    if(response.headers['content-disposition']) {
+    if (response.headers['content-disposition']) {
       var str = response.headers['content-disposition'];
       fileTypeContent = str.substring(str.lastIndexOf(".")).match(/\w+/);
       fileTypeContent = fileTypeContent[0] || null;
@@ -115,24 +127,24 @@ Transifex.prototype.projectPutRequest = function(url, data, callback) {
   });
 };
 
-Transifex.prototype.projectStatisticsMethods = function(callback) {
+Transifex.prototype.projectStatisticsMethods = function (callback) {
   var that = this;
-  this.resourcesSetMethod(this.projectSlug, function(error, data) {
+  this.resourcesSetMethod(this.projectSlug, function (error, data) {
     if (error) {
       return callback(error);
     }
     var finalDetails = {},
-      wait = data.length;
-    _.findKey(data, function(resource) {
+        wait = data.length;
+    _lodash2.default.findKey(data, function (resource) {
       var details = {};
-      that.statisticsMethods(this.projectSlug, resource.slug, function(err, projectData){
+      that.statisticsMethods(this.projectSlug, resource.slug, function (err, projectData) {
         if (err) {
           return callback(err);
         }
         details[resource.slug] = projectData;
-        _.extend(finalDetails, details);
+        _lodash2.default.extend(finalDetails, details);
         wait--;
-        if ( wait === 0 ) {
+        if (wait === 0) {
           callback(null, finalDetails);
         }
       });
@@ -140,68 +152,68 @@ Transifex.prototype.projectStatisticsMethods = function(callback) {
   });
 };
 
-Transifex.prototype.listOfContributors = function(callback) {
+Transifex.prototype.listOfContributors = function (callback) {
   var contributorsDetails = [],
       numOfTranslators = 0,
       numOfReviewers = 0,
       numOfCoordinators = 0,
       totalNum = 0;
 
-  this.languageSetMethod(this.projectSlug, function(err, allListDetails) {
+  this.languageSetMethod(this.projectSlug, function (err, allListDetails) {
     if (err) {
       return callback(err);
     }
     var contributorLists = [];
     for (var i = allListDetails.length - 1; i >= 0; i--) {
-      Object.keys(allListDetails[i]).forEach(function(typeName) {
-        if(allListDetails[i][typeName].length >= 0 && typeName != "language_code") {
+      Object.keys(allListDetails[i]).forEach(function (typeName) {
+        if (allListDetails[i][typeName].length >= 0 && typeName != "language_code") {
           for (var x = allListDetails[i][typeName].length - 1; x >= 0; x--) {
-            if(contributorLists.indexOf(allListDetails[i][typeName][x]) === -1) {
+            if (contributorLists.indexOf(allListDetails[i][typeName][x]) === -1) {
               contributorLists.push(allListDetails[i][typeName][x]);
             }
           };
         }
       });
     };
-    callback( null, contributorLists.sort(function (a, b) {
+    callback(null, contributorLists.sort(function (a, b) {
       return a.toLowerCase().localeCompare(b.toLowerCase());
     }));
   });
 };
 
-Transifex.prototype.languageSetInfoMethods = function(callback) {
+Transifex.prototype.languageSetInfoMethods = function (callback) {
   var that = this;
   this.resourcesSetMethod(this.projectSlug, function (error, resourceData) {
     if (error) {
       return callback(error);
     }
     var languagesInfo = [];
-    that.resourcesInstanceMethods(this.projectSlug, resourceData[0].slug, function(err, data) {
-      data.available_languages.forEach(function(language) {
+    that.resourcesInstanceMethods(this.projectSlug, resourceData[0].slug, function (err, data) {
+      data.available_languages.forEach(function (language) {
         languagesInfo.push({
           locale: language.code,
           name: language.name
         });
       });
-      callback(null, languagesInfo)
-    })
+      callback(null, languagesInfo);
+    });
   });
 };
 
-Transifex.prototype.languageStatisticsMethods = function(locale, callback) {
+Transifex.prototype.languageStatisticsMethods = function (locale, callback) {
   var that = this;
-  this.resourcesSetMethod(this.projectSlug, function(error, projectData) {
+  this.resourcesSetMethod(this.projectSlug, function (error, projectData) {
     if (error) {
       return callback(error);
     }
     var details = {},
-    wait = projectData.length;
+        wait = projectData.length;
 
-    _.findKey(projectData, function(resource) {
-      that.statisticsMethods(this.projectSlug, resource.slug, locale, function(err, data) {
+    _lodash2.default.findKey(projectData, function (resource) {
+      that.statisticsMethods(this.projectSlug, resource.slug, locale, function (err, data) {
         details[resource.slug] = data;
         wait--;
-        if ( wait === 0 ) {
+        if (wait === 0) {
           callback(null, details);
         }
       });
@@ -209,13 +221,12 @@ Transifex.prototype.languageStatisticsMethods = function(locale, callback) {
   });
 };
 
-
 /*
 * PROJECT APIs
 */
 
-Transifex.prototype.projectSetMethods = function(options, callback) {
-  this.projectRequest(this.expUrl.txProjects, options, function(err, projects) {
+Transifex.prototype.projectSetMethods = function (options, callback) {
+  this.projectRequest(this.expUrl.txProjects, options, function (err, projects) {
     if (err) {
       return callback(err);
     }
@@ -228,10 +239,10 @@ Transifex.prototype.projectSetMethods = function(options, callback) {
   });
 };
 
-Transifex.prototype.projectInstanceMethods = function(project_slug, callback) {
+Transifex.prototype.projectInstanceMethods = function (project_slug, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   var url = this.expUrl.projectInstanceAPI.replace("<project_slug>", project_slug);
-  this.projectRequest(url, function(err, project) {
+  this.projectRequest(url, function (err, project) {
     if (err) {
       return callback(err);
     }
@@ -248,15 +259,14 @@ Transifex.prototype.projectInstanceMethods = function(project_slug, callback) {
 * END PROJECT APIs
 */
 
-
 /*
 * RESOURCE API
 */
 
-Transifex.prototype.resourceCreateMethod = function(project_slug, form, callback) {
+Transifex.prototype.resourceCreateMethod = function (project_slug, form, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   var url = this.expUrl.projectResources.replace("<project_slug>", project_slug);
-  this.projectPostRequest(url, form, function(err, resources) {
+  this.projectPostRequest(url, form, function (err, resources) {
     if (err) {
       return callback(err);
     }
@@ -269,12 +279,11 @@ Transifex.prototype.resourceCreateMethod = function(project_slug, form, callback
   });
 };
 
-Transifex.prototype.resourceDeleteMethod = function(project_slug, resource_slug, callback) {
+Transifex.prototype.resourceDeleteMethod = function (project_slug, resource_slug, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   resource_slug = resource_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.projectResource.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug);
-  this.projectDeleteRequest(url, function(err, fileContent) {
+  var url = this.expUrl.projectResource.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug);
+  this.projectDeleteRequest(url, function (err, fileContent) {
     if (err) {
       return callback(err);
     }
@@ -282,10 +291,10 @@ Transifex.prototype.resourceDeleteMethod = function(project_slug, resource_slug,
   });
 };
 
-Transifex.prototype.resourcesSetMethod = function(project_slug, callback) {
+Transifex.prototype.resourcesSetMethod = function (project_slug, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   var url = this.expUrl.projectResources.replace("<project_slug>", project_slug);
-  this.projectRequest(url, function(err, resources) {
+  this.projectRequest(url, function (err, resources) {
     if (err) {
       return callback(err);
     }
@@ -298,22 +307,21 @@ Transifex.prototype.resourcesSetMethod = function(project_slug, callback) {
   });
 };
 
-Transifex.prototype.resourcesInstanceMethods = function(project_slug, resource_slug, bool, callback) {
+Transifex.prototype.resourcesInstanceMethods = function (project_slug, resource_slug, bool, callback) {
   // Allow calling with or without options.
   if (typeof bool === 'function') {
     callback = bool;
     options = true;
   } else {
-    callback = callback || function(){};
+    callback = callback || function () {};
   }
   project_slug = project_slug || this.projectSlug || "webmaker";
   resource_slug = resource_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.projectResource.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug);
+  var url = this.expUrl.projectResource.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug);
   if (!bool) {
-    url = url.substr(0, url.lastIndexOf("/"))
+    url = url.substr(0, url.lastIndexOf("/"));
   }
-  this.projectRequest(url, function(err, resource) {
+  this.projectRequest(url, function (err, resource) {
     if (err) {
       return callback(err);
     }
@@ -326,12 +334,11 @@ Transifex.prototype.resourcesInstanceMethods = function(project_slug, resource_s
   });
 };
 
-Transifex.prototype.sourceLanguageMethods = function(project_slug, resource_slug, callback) {
+Transifex.prototype.sourceLanguageMethods = function (project_slug, resource_slug, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   resource_slug = resource_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.projectResourceFile.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug);
-  this.projectRequest(url, function(err, fileContent) {
+  var url = this.expUrl.projectResourceFile.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug);
+  this.projectRequest(url, function (err, fileContent) {
     if (err) {
       return callback(err);
     }
@@ -339,12 +346,11 @@ Transifex.prototype.sourceLanguageMethods = function(project_slug, resource_slug
   });
 };
 
-Transifex.prototype.uploadSourceLanguageMethod = function(project_slug, resource_slug, content, callback) {
+Transifex.prototype.uploadSourceLanguageMethod = function (project_slug, resource_slug, content, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   resource_slug = resource_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.projectResourceContent.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug);
-  this.projectPutRequest(url, content, function(err, status) {
+  var url = this.expUrl.projectResourceContent.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug);
+  this.projectPutRequest(url, content, function (err, status) {
     if (err) {
       return callback(err);
     }
@@ -365,10 +371,10 @@ Transifex.prototype.uploadSourceLanguageMethod = function(project_slug, resource
 * LANGUAGE API
 */
 
-Transifex.prototype.languageSetMethod = function(project_slug, callback) {
+Transifex.prototype.languageSetMethod = function (project_slug, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   var url = this.expUrl.languageSetURL.replace("<project_slug>", project_slug);
-  this.projectRequest(url, function(err, languages) {
+  this.projectRequest(url, function (err, languages) {
     if (err) {
       return callback(err);
     }
@@ -381,21 +387,20 @@ Transifex.prototype.languageSetMethod = function(project_slug, callback) {
   });
 };
 
-Transifex.prototype.languageInstanceMethod = function(project_slug, language_code, bool, callback) {
+Transifex.prototype.languageInstanceMethod = function (project_slug, language_code, bool, callback) {
   // Allow calling with or without options.
   if (typeof bool === 'function') {
     callback = bool;
     bool = true;
   } else {
-    callback = callback || function(){};
+    callback = callback || function () {};
   }
   project_slug = project_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.languageInstanceURL.replace("<project_slug>", project_slug)
-  .replace("<language_code>", language_code);
+  var url = this.expUrl.languageInstanceURL.replace("<project_slug>", project_slug).replace("<language_code>", language_code);
   if (!bool) {
-    url = url.substr(0, url.lastIndexOf("/"))
+    url = url.substr(0, url.lastIndexOf("/"));
   }
-  this.projectRequest(url, function(err, language) {
+  this.projectRequest(url, function (err, language) {
     if (err) {
       return callback(err);
     }
@@ -404,21 +409,20 @@ Transifex.prototype.languageInstanceMethod = function(project_slug, language_cod
     } catch (e) {
       return callback(e);
     }
-    if(bool) {
+    if (bool) {
       language.completed_percentage = Math.round(language.translated_segments * 100 / language.total_segments);
     }
     callback(null, language);
   });
 };
 
-Transifex.prototype.contributorListFor = function(project_slug, language_code, type, callback) {
-  if(["coordinators", "reviewers", "translators"].indexOf(type) === -1) {
+Transifex.prototype.contributorListFor = function (project_slug, language_code, type, callback) {
+  if (["coordinators", "reviewers", "translators"].indexOf(type) === -1) {
     return callback(Error('Please specify the type of the contributor : "coordinators", "reviewers" or "translators"'));
   }
   project_slug = project_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.contributorForURL.replace("<project_slug>", project_slug)
-  .replace("<language_code>", language_code).replace("<type>", type);
-  this.projectRequest(url, function(err, list) {
+  var url = this.expUrl.contributorForURL.replace("<project_slug>", project_slug).replace("<language_code>", language_code).replace("<type>", type);
+  this.projectRequest(url, function (err, list) {
     if (err) {
       return callback(err);
     }
@@ -435,23 +439,21 @@ Transifex.prototype.contributorListFor = function(project_slug, language_code, t
 * END LANGUAGE API
 */
 
-
 /*
 * TRANSLATIONS API
 */
 
-Transifex.prototype.translationInstanceMethod = function(project_slug, resource_slug, language_code, type, callback) {
+Transifex.prototype.translationInstanceMethod = function (project_slug, resource_slug, language_code, type, callback) {
   // Allow calling with or without options.
   if (typeof type === 'function') {
     callback = type;
     type = {};
   } else {
-    callback = callback || function(){};
+    callback = callback || function () {};
   }
   project_slug = project_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.translationMethodURL.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
-  this.projectRequest(url, type, function(err, content, type) {
+  var url = this.expUrl.translationMethodURL.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
+  this.projectRequest(url, type, function (err, content, type) {
     if (err) {
       return callback(err);
     }
@@ -459,12 +461,11 @@ Transifex.prototype.translationInstanceMethod = function(project_slug, resource_
   });
 };
 
-Transifex.prototype.uploadTranslationInstanceMethod = function(project_slug, resource_slug, language_code, content, callback) {
+Transifex.prototype.uploadTranslationInstanceMethod = function (project_slug, resource_slug, language_code, content, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
-  callback = callback || function(){};
-  var url = this.expUrl.translationMethodURL.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
-  this.projectPutRequest(url, content, function(err, content) {
+  callback = callback || function () {};
+  var url = this.expUrl.translationMethodURL.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
+  this.projectPutRequest(url, content, function (err, content) {
     if (err) {
       return callback(err);
     }
@@ -472,15 +473,11 @@ Transifex.prototype.uploadTranslationInstanceMethod = function(project_slug, res
   });
 };
 
-
-Transifex.prototype.translationStringsMethod = function(project_slug, resource_slug, language_code, string_key, callback) {
+Transifex.prototype.translationStringsMethod = function (project_slug, resource_slug, language_code, string_key, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
   string_key = string_key || '';
-  var url = this.expUrl.translationStringsURL.replace("<project_slug>", project_slug)
-                                        .replace("<resource_slug>", resource_slug)
-                                        .replace("<language_code>", language_code)
-                                        .replace("<string_key>", string_key ? "&key=" + string_key : '');
-  this.projectRequest(url, function(err, content) {
+  var url = this.expUrl.translationStringsURL.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug).replace("<language_code>", language_code).replace("<string_key>", string_key ? "&key=" + string_key : '');
+  this.projectRequest(url, function (err, content) {
     if (err) {
       return callback(err);
     }
@@ -489,20 +486,18 @@ Transifex.prototype.translationStringsMethod = function(project_slug, resource_s
 };
 
 // takes objects with a key property, calculates and returns object with source_entity_hash instead
-const keyToHash = translationStringObj => {
+var keyToHash = function keyToHash(translationStringObj) {
   // adding colon, ignoring context use case - https://docs.transifex.com/api/translation-strings#identifying-strings-using-hashes
-  translationStringObj.source_entity_hash = crypto.createHash('md5').update(translationStringObj.key + ":").digest("hex");
+  translationStringObj.source_entity_hash = _crypto2.default.createHash('md5').update(translationStringObj.key + ":").digest("hex");
   delete translationStringObj.key;
 
   return translationStringObj;
 };
 
-Transifex.prototype.translationStringsPutMethod = function(project_slug, resource_slug, language_code, content, callback) {
+Transifex.prototype.translationStringsPutMethod = function (project_slug, resource_slug, language_code, content, callback) {
   project_slug = project_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.translationStringsPutURL.replace("<project_slug>", project_slug)
-                                        .replace("<resource_slug>", resource_slug)
-                                        .replace("<language_code>", language_code);
-  this.projectPutRequest(url, content.map(keyToHash), function(err, content) {
+  var url = this.expUrl.translationStringsPutURL.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
+  this.projectPutRequest(url, content.map(keyToHash), function (err, content) {
     if (err) {
       return callback(err);
     }
@@ -513,26 +508,24 @@ Transifex.prototype.translationStringsPutMethod = function(project_slug, resourc
 * END TRANSLATIONS API
 */
 
-
 /*
 * STATISTICS API
 */
 
-Transifex.prototype.statisticsMethods = function(project_slug, resource_slug, language_code, callback) {
+Transifex.prototype.statisticsMethods = function (project_slug, resource_slug, language_code, callback) {
   // Allow calling with or without options.
   if (typeof language_code === 'function') {
     callback = language_code;
     language_code = "";
   } else {
-    callback = callback || function(){};
+    callback = callback || function () {};
   }
   project_slug = project_slug || this.projectSlug || "webmaker";
-  var url = this.expUrl.statsMethodURL.replace("<project_slug>", project_slug)
-  .replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
+  var url = this.expUrl.statsMethodURL.replace("<project_slug>", project_slug).replace("<resource_slug>", resource_slug).replace("<language_code>", language_code);
   if (!language_code) {
-    url = url.substr(0, url.lastIndexOf("/"))
+    url = url.substr(0, url.lastIndexOf("/"));
   }
-  this.projectRequest(url, function(err, stats) {
+  this.projectRequest(url, function (err, stats) {
     if (err) {
       return callback(err);
     }
@@ -549,14 +542,13 @@ Transifex.prototype.statisticsMethods = function(project_slug, resource_slug, la
 * END STATISTICS API
 */
 
-
 /*
 * LANGUAGE INFO API
 */
 
-Transifex.prototype.languageInstanceMethods = function(language_code, callback) {
+Transifex.prototype.languageInstanceMethods = function (language_code, callback) {
   var url = this.expUrl.languageURL.replace("<language_code>", language_code);
-  this.projectRequest(url, function(err, language) {
+  this.projectRequest(url, function (err, language) {
     if (err) {
       return callback(err);
     }
@@ -569,8 +561,8 @@ Transifex.prototype.languageInstanceMethods = function(language_code, callback) 
   });
 };
 
-Transifex.prototype.languageSetMethods = function(callback) {
-  this.projectRequest(this.expUrl.languagesURL, function(err, languages) {
+Transifex.prototype.languageSetMethods = function (callback) {
+  this.projectRequest(this.expUrl.languagesURL, function (err, languages) {
     if (err) {
       return callback(err);
     }
@@ -584,4 +576,4 @@ Transifex.prototype.languageSetMethods = function(callback) {
 };
 
 var exported_Transifex = Transifex;
-export { exported_Transifex as Transifex };
+exports.Transifex = exported_Transifex;
