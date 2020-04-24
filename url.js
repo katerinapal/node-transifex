@@ -1,3 +1,4 @@
+"use strict";
 module.exports = function ( projectName ) {
   const BASE_URL = "https://www.transifex.com/api/2/";
   const BASEP_URL = BASE_URL + "project/";

@@ -1,3 +1,4 @@
+"use strict";
 const request = require("request"),
     _ = require("lodash"),
     crypto = require('crypto');
@@ -7,7 +8,7 @@ function Transifex(options) {
   this.userAuth = options.credential || {};
   this.authHeader = "Basic " + new Buffer(this.userAuth).toString("base64");
   this.expUrl = require("./url")(this.projectSlug).API;
-};
+}
 
 // request the project details based on the url provided
 Transifex.prototype.projectRequest = function(url, options, callback) {

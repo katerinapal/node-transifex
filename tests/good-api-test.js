@@ -1,3 +1,4 @@
+"use strict";
 var should = require('should');
 var nock = require('nock');
 var Transifex = require('../transifex');

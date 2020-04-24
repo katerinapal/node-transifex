@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+"use strict";
+
 var Transifex   = require("../transifex"),
     path        = require('path'),
     fs          = require('fs'),
@@ -107,7 +109,7 @@ function importFromTransifex(options) {
       });
     });
   });
-};
+}
 
 function main() {
   var program = require('commander');
